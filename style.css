@@ -853,28 +853,23 @@ a {
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  background: linear-gradient(135deg, rgba(34, 42, 60, 0.94), rgba(17, 23, 37, 0.98));
+  background: linear-gradient(135deg, rgba(29, 37, 54, 0.96), rgba(16, 23, 36, 0.98));
   border: 1px solid rgba(128, 148, 178, 0.16);
   border-radius: 24px;
-  box-shadow:
-    0 18px 34px rgba(0, 0, 0, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(14px);
+  box-shadow: 0 12px 22px rgba(0, 0, 0, 0.16);
   transition:
-    transform 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease,
-    background 0.3s ease;
+    transform 0.24s ease,
+    border-color 0.24s ease,
+    box-shadow 0.24s ease,
+    background 0.24s ease;
 }
 
 .program-item::before {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle at 12% 18%, rgba(0, 229, 168, 0.12), transparent 26%),
-    linear-gradient(120deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0) 36%, rgba(0, 229, 168, 0.08));
-  opacity: 0.88;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0) 32%);
+  opacity: 0.7;
   pointer-events: none;
 }
 
@@ -883,25 +878,21 @@ a {
   position: absolute;
   inset: 1px;
   border-radius: 23px;
-  border: 1px solid rgba(196, 220, 255, 0.05);
+  border: 1px solid rgba(196, 220, 255, 0.04);
   pointer-events: none;
-  opacity: 0.9;
+  opacity: 0.72;
 }
 
 .program-item:hover {
-  transform: translateY(-2px);
-  border-color: rgba(0, 229, 168, 0.28);
-  box-shadow:
-    0 22px 40px rgba(0, 0, 0, 0.24),
-    0 0 0 1px rgba(0, 229, 168, 0.06);
+  transform: translateY(-1px);
+  border-color: rgba(0, 229, 168, 0.22);
+  box-shadow: 0 14px 24px rgba(0, 0, 0, 0.18);
 }
 
 .program-item.is-open {
-  background: linear-gradient(135deg, rgba(30, 40, 60, 0.98), rgba(18, 25, 39, 1));
-  border-color: rgba(0, 229, 168, 0.38);
-  box-shadow:
-    0 24px 44px rgba(0, 0, 0, 0.26),
-    0 0 32px rgba(0, 229, 168, 0.08);
+  background: linear-gradient(135deg, rgba(31, 40, 58, 0.98), rgba(18, 26, 40, 1));
+  border-color: rgba(0, 229, 168, 0.26);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.2);
 }
 
 .program-toggle {
@@ -928,7 +919,7 @@ a {
   flex-shrink: 0;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(124, 245, 255, 0.9), rgba(0, 229, 168, 0.5));
-  box-shadow: 0 0 18px rgba(0, 229, 168, 0.24);
+  box-shadow: 0 0 10px rgba(0, 229, 168, 0.12);
 }
 
 .program-toggle-label {
@@ -946,11 +937,9 @@ a {
   flex-shrink: 0;
   color: #eef9ff;
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(14, 19, 31, 0.9));
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(14, 19, 31, 0.9));
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 14px 24px rgba(0, 0, 0, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .program-toggle-icon::before,
@@ -976,12 +965,9 @@ a {
 
 .program-item.is-open .program-toggle-icon {
   color: #00e5a8;
-  background: linear-gradient(135deg, rgba(0, 229, 168, 0.16), rgba(10, 18, 28, 0.94));
-  border-color: rgba(0, 229, 168, 0.28);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 16px 28px rgba(0, 0, 0, 0.22),
-    0 0 18px rgba(0, 229, 168, 0.12);
+  background: linear-gradient(135deg, rgba(0, 229, 168, 0.12), rgba(10, 18, 28, 0.94));
+  border-color: rgba(0, 229, 168, 0.22);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .program-item.is-open .program-toggle-icon::after {
