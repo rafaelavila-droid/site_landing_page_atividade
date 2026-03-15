@@ -1,5 +1,6 @@
 const revealElements = document.querySelectorAll(".reveal");
-const heroTypedItems = Array.from(document.querySelectorAll(".hero-card .typed-item"));
+const heroDesktopTypedItems = Array.from(document.querySelectorAll(".hero-card--desktop .typed-item"));
+const heroMobileTypedItems = Array.from(document.querySelectorAll(".hero-card--mobile .typed-item"));
 const checkoutTypedItems = Array.from(document.querySelectorAll(".checkout-typed-item"));
 const checkoutView = document.getElementById("checkoutView");
 const checkoutOpeners = Array.from(document.querySelectorAll("[data-open-checkout]"));
@@ -11,19 +12,22 @@ const CLICK_SOUND_POOL_SIZE = 8;
 const CLICK_SOUND_POOL_MAX = 24;
 const CLICK_SOUND_VOLUME = 0.42;
 const TYPING_SOUND_SRC = "dragon-studio-single-key-press-393908.mp3";
-const TYPING_SOUND_POOL_SIZE = 18;
-const TYPING_SOUND_POOL_MAX = 48;
+const TYPING_SOUND_POOL_SIZE = 6;
+const TYPING_SOUND_POOL_MAX = 12;
 const TYPING_SOUND_VOLUME = 0.03;
 const TYPING_SOUND_PLAYBACK_RATE = 1.08;
+const TYPING_SOUND_MIN_INTERVAL_MS = 85;
 const CHECKOUT_HASH = "#checkout";
 const clickSoundPool = [];
 const typingSoundPool = [];
 let clickSoundPoolIndex = 0;
 let typingSoundPoolIndex = 0;
+let lastTypingSoundAt = 0;
 let checkoutTypingLoopTimer = null;
 let checkoutTypingSequenceToken = 0;
 let landingScrollY = 0;
 let lastFocusedElement = null;
+const mobileLayoutQuery = window.matchMedia("(max-width: 768px)");
 
 function createClickSoundInstance() {
   const audio = new Audio(CLICK_SOUND_SRC);
@@ -112,6 +116,13 @@ function getTypingSoundPlayer() {
 }
 
 function revealOnScroll() {
+  if (mobileLayoutQuery.matches) {
+    revealElements.forEach((element) => {
+      element.classList.add("active");
+    });
+    return;
+  }
+
   const triggerBottom = window.innerHeight * 0.85;
 
   revealElements.forEach((element) => {
@@ -123,16 +134,25 @@ function revealOnScroll() {
   });
 }
 
-window.addEventListener("scroll", revealOnScroll);
+window.addEventListener("scroll", revealOnScroll, { passive: true });
+window.addEventListener("resize", revealOnScroll, { passive: true });
 window.addEventListener("load", revealOnScroll);
 window.addEventListener("load", prepareClickSoundPool, { once: true });
-window.addEventListener("load", prepareTypingSoundPool, { once: true });
+
+if (typeof mobileLayoutQuery.addEventListener === "function") {
+  mobileLayoutQuery.addEventListener("change", revealOnScroll);
+  mobileLayoutQuery.addEventListener("change", syncTypingByActiveView);
+} else if (typeof mobileLayoutQuery.addListener === "function") {
+  mobileLayoutQuery.addListener(revealOnScroll);
+  mobileLayoutQuery.addListener(syncTypingByActiveView);
+}
 
 document.addEventListener("dragstart", function (e) {
   e.preventDefault();
 });
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const isMobileLayout = () => mobileLayoutQuery.matches;
 
 function getClickableSoundTarget(target) {
   if (!(target instanceof Element)) {
@@ -171,14 +191,33 @@ function playClickSound() {
   return audio;
 }
 
-function playTypingSound(character) {
-  if (!character || /\s/.test(character) || prefersReducedMotion) {
+function shouldPlayTypingSound(character, characterIndex) {
+  if (!character || /\s/.test(character)) {
+    return false;
+  }
+
+  if (!/[0-9A-Za-zÀ-ÿ]/.test(character)) {
+    return false;
+  }
+
+  return characterIndex === 0 || characterIndex % 2 === 0;
+}
+
+function playTypingSound(character, characterIndex) {
+  if (prefersReducedMotion || !shouldPlayTypingSound(character, characterIndex)) {
+    return null;
+  }
+
+  const now = performance.now();
+
+  if (now - lastTypingSoundAt < TYPING_SOUND_MIN_INTERVAL_MS) {
     return null;
   }
 
   prepareTypingSoundPool();
 
   const audio = getTypingSoundPlayer();
+  lastTypingSoundAt = now;
 
   audio.pause();
   audio.currentTime = 0;
@@ -193,6 +232,7 @@ function playTypingSound(character) {
 }
 
 function stopTypingSounds() {
+  lastTypingSoundAt = 0;
   typingSoundPool.forEach((audio) => {
     audio.pause();
     audio.currentTime = 0;
@@ -200,12 +240,8 @@ function stopTypingSounds() {
 }
 
 document.addEventListener(
-  "pointerdown",
+  "click",
   function (event) {
-    if (event.button !== 0) {
-      return;
-    }
-
     const clickableTarget = getClickableSoundTarget(event.target);
 
     if (!canPlayClickSound(clickableTarget)) {
@@ -216,20 +252,6 @@ document.addEventListener(
   },
   true
 );
-
-document.addEventListener("keydown", function (event) {
-  if (event.repeat || (event.key !== "Enter" && event.key !== " ")) {
-    return;
-  }
-
-  const clickableTarget = getClickableSoundTarget(event.target);
-
-  if (!canPlayClickSound(clickableTarget)) {
-    return;
-  }
-
-  playClickSound();
-});
 
 function wait(ms) {
   return new Promise((resolve) => {
@@ -279,13 +301,15 @@ async function typeItem(item, isCancelled = () => false) {
     return;
   }
 
-  for (const character of fullText) {
+  const characters = Array.from(fullText);
+
+  for (const [characterIndex, character] of characters.entries()) {
     if (isCancelled()) {
       return;
     }
 
     textElement.textContent += character;
-    playTypingSound(character);
+    playTypingSound(character, characterIndex);
     await wait(character === " " ? 24 : 40);
   }
 
@@ -410,7 +434,8 @@ function setupTypingSequence(items, triggerElement, options = {}) {
   };
 }
 
-const heroCard = document.querySelector(".hero-card");
+const heroCardDesktop = document.querySelector(".hero-card--desktop");
+const heroCardMobile = document.querySelector(".hero-card--mobile");
 const checkoutInfoCard = document.querySelector(".checkout-info-card");
 const programToggles = Array.from(document.querySelectorAll(".program-toggle"));
 const checkoutButton = document.getElementById("checkoutButton");
@@ -439,9 +464,14 @@ const checkoutConfig = {
   },
 };
 
-const heroTypingController = setupTypingSequence(heroTypedItems, heroCard, {
-  isActive: () => !isCheckoutActive(),
-});
+const heroTypingControllers = [
+  setupTypingSequence(heroDesktopTypedItems, heroCardDesktop, {
+    isActive: () => !isCheckoutActive() && !isMobileLayout(),
+  }),
+  setupTypingSequence(heroMobileTypedItems, heroCardMobile, {
+    isActive: () => !isCheckoutActive() && isMobileLayout(),
+  }),
+].filter(Boolean);
 
 function isCheckoutActive() {
   return document.body.classList.contains("checkout-active");
@@ -460,13 +490,13 @@ function stopCheckoutTypingLoop(resetItems = false) {
 
 function syncTypingByActiveView() {
   if (isCheckoutActive()) {
-    heroTypingController?.stop(true);
+    heroTypingControllers.forEach((controller) => controller.stop(true));
     startCheckoutTypingLoop();
     return;
   }
 
   stopCheckoutTypingLoop(true);
-  heroTypingController?.refresh();
+  heroTypingControllers.forEach((controller) => controller.refresh());
 }
 
 async function startCheckoutTypingLoop() {
