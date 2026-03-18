@@ -5,12 +5,15 @@ const checkoutTypedItems = Array.from(document.querySelectorAll(".checkout-typed
 const checkoutView = document.getElementById("checkoutView");
 const checkoutOpeners = Array.from(document.querySelectorAll("[data-open-checkout]"));
 const checkoutClosers = Array.from(document.querySelectorAll("[data-close-checkout]"));
+const mobileNavToggle = document.querySelector("[data-mobile-nav-toggle]");
+const mobileNavPanel = document.querySelector("[data-mobile-nav-panel]");
+const mobileNavLinks = Array.from(document.querySelectorAll(".mobile-nav-link"));
 const TYPING_LOOP_MS = 20000;
 const CLICK_SOUND_SRC = "mouse-click-sound-fx.mp3";
 const CLICK_SOUND_TARGETS = "a[href], button, [role='button'], [data-click-sound]";
 const CLICK_SOUND_POOL_SIZE = 8;
 const CLICK_SOUND_POOL_MAX = 24;
-const CLICK_SOUND_VOLUME = 0.42;
+const CLICK_SOUND_VOLUME = 0.30;
 const TYPING_SOUND_SRC = "dragon-studio-single-key-press-393908.mp3";
 const TYPING_SOUND_POOL_SIZE = 6;
 const TYPING_SOUND_POOL_MAX = 12;
@@ -23,6 +26,7 @@ const typingSoundPool = [];
 let clickSoundPoolIndex = 0;
 let typingSoundPoolIndex = 0;
 let lastTypingSoundAt = 0;
+let revealObserver = null;
 let checkoutTypingLoopTimer = null;
 let checkoutTypingSequenceToken = 0;
 let landingScrollY = 0;
@@ -115,36 +119,69 @@ function getTypingSoundPlayer() {
   return recycledAudio;
 }
 
-function revealOnScroll() {
-  if (mobileLayoutQuery.matches) {
+function setupRevealObserver() {
+  if (revealObserver) {
+    revealObserver.disconnect();
+    revealObserver = null;
+  }
+
+  if (mobileLayoutQuery.matches || !("IntersectionObserver" in window)) {
     revealElements.forEach((element) => {
       element.classList.add("active");
     });
     return;
   }
 
-  const triggerBottom = window.innerHeight * 0.85;
+  revealObserver = new IntersectionObserver(
+    (entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        entry.target.classList.add("active");
+        observer.unobserve(entry.target);
+      });
+    },
+    {
+      threshold: 0.12,
+      rootMargin: "0px 0px -10% 0px",
+    }
+  );
 
   revealElements.forEach((element) => {
-    const elementTop = element.getBoundingClientRect().top;
-
-    if (elementTop < triggerBottom) {
-      element.classList.add("active");
+    if (element.classList.contains("active")) {
+      return;
     }
+
+    revealObserver.observe(element);
   });
 }
 
-window.addEventListener("scroll", revealOnScroll, { passive: true });
-window.addEventListener("resize", revealOnScroll, { passive: true });
-window.addEventListener("load", revealOnScroll);
+function setMobileExperienceState() {
+  document.body.classList.toggle("mobile-experience", isMobileLayout());
+
+  if (isMobileLayout()) {
+    stopTypingSounds();
+  }
+
+  if (!isMobileLayout()) {
+    closeMobileNav();
+  }
+}
+
+window.addEventListener("load", setupRevealObserver);
 window.addEventListener("load", prepareClickSoundPool, { once: true });
+window.addEventListener("load", setMobileExperienceState);
 
 if (typeof mobileLayoutQuery.addEventListener === "function") {
-  mobileLayoutQuery.addEventListener("change", revealOnScroll);
+  mobileLayoutQuery.addEventListener("change", setupRevealObserver);
   mobileLayoutQuery.addEventListener("change", syncTypingByActiveView);
+  mobileLayoutQuery.addEventListener("change", setMobileExperienceState);
 } else if (typeof mobileLayoutQuery.addListener === "function") {
-  mobileLayoutQuery.addListener(revealOnScroll);
+  mobileLayoutQuery.addListener(setupRevealObserver);
   mobileLayoutQuery.addListener(syncTypingByActiveView);
+  mobileLayoutQuery.addListener(setMobileExperienceState);
 }
 
 document.addEventListener("dragstart", function (e) {
@@ -153,6 +190,33 @@ document.addEventListener("dragstart", function (e) {
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const isMobileLayout = () => mobileLayoutQuery.matches;
+
+function setMobileNavState(isOpen) {
+  if (!mobileNavToggle || !mobileNavPanel) {
+    return;
+  }
+
+  document.body.classList.toggle("mobile-nav-open", isOpen);
+  mobileNavToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  mobileNavPanel.setAttribute("aria-hidden", isOpen ? "false" : "true");
+}
+
+function openMobileNav() {
+  if (!isMobileLayout()) {
+    return;
+  }
+
+  setMobileNavState(true);
+}
+
+function closeMobileNav() {
+  setMobileNavState(false);
+}
+
+function toggleMobileNav() {
+  const isOpen = document.body.classList.contains("mobile-nav-open");
+  setMobileNavState(!isOpen);
+}
 
 function getClickableSoundTarget(target) {
   if (!(target instanceof Element)) {
@@ -204,7 +268,7 @@ function shouldPlayTypingSound(character, characterIndex) {
 }
 
 function playTypingSound(character, characterIndex) {
-  if (prefersReducedMotion || !shouldPlayTypingSound(character, characterIndex)) {
+  if (isMobileLayout() || prefersReducedMotion || !shouldPlayTypingSound(character, characterIndex)) {
     return null;
   }
 
@@ -453,14 +517,14 @@ const checkoutConfig = {
   pix: {
     total: 50,
     link: "https://mpago.la/2d4Yrj8",
-    buttonLabel: "Ir para o pagamento com Pix",
-    helper: "Pix com pagamento instant\u00e2neo e valor final j\u00e1 ajustado.",
+    buttonLabel: "Continuar com Pix",
+    helper: "Pix com confirma\u00e7\u00e3o r\u00e1pida e valor final j\u00e1 definido.",
   },
   card: {
     total: 50,
     link: "https://mpago.li/1anehxX",
-    buttonLabel: "Ir para o pagamento com Cart\u00e3o",
-    helper: "Cart\u00e3o com checkout seguro e valor final j\u00e1 ajustado.",
+    buttonLabel: "Continuar com Cart\u00e3o",
+    helper: "Cart\u00e3o em ambiente seguro, com valor final j\u00e1 definido.",
   },
 };
 
@@ -604,6 +668,7 @@ function syncCheckoutWithHash() {
 checkoutOpeners.forEach((opener) => {
   opener.addEventListener("click", function (event) {
     event.preventDefault();
+    closeMobileNav();
     openCheckout();
   });
 });
@@ -617,6 +682,39 @@ checkoutClosers.forEach((closer) => {
 
 window.addEventListener("hashchange", syncCheckoutWithHash);
 syncCheckoutWithHash();
+
+if (mobileNavToggle) {
+  mobileNavToggle.addEventListener("click", function () {
+    toggleMobileNav();
+  });
+}
+
+mobileNavLinks.forEach((link) => {
+  link.addEventListener("click", function () {
+    closeMobileNav();
+  });
+});
+
+document.addEventListener("click", function (event) {
+  if (!document.body.classList.contains("mobile-nav-open")) {
+    return;
+  }
+
+  if (
+    mobileNavPanel?.contains(event.target) ||
+    mobileNavToggle?.contains(event.target)
+  ) {
+    return;
+  }
+
+  closeMobileNav();
+});
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Escape") {
+    closeMobileNav();
+  }
+});
 
 function setProgramItemState(item, isOpen) {
   const toggle = item?.querySelector(".program-toggle");
@@ -717,8 +815,8 @@ function renderCheckoutMethod(methodName) {
 
   if (checkoutSummaryNote) {
     checkoutSummaryNote.textContent = hasFullConfig
-      ? "Valor final fechado para o cliente."
-      : "Valor final j\u00e1 calculado.";
+      ? "Valor final \u00fanico para confirmar sua vaga."
+      : "Valor final pronto para confirma\u00e7\u00e3o.";
   }
 
   if (checkoutHelper) {

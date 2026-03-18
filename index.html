@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Programa de Treino | Transforme Seu Corpo</title>
+  <title>FIT90 | Treino, Alimenta&ccedil;&atilde;o e Acompanhamento em 90 Dias</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="site-body">
@@ -11,6 +11,18 @@
   <header class="hero">
     <nav class="navbar">
       <div class="logo">FIT<span>90</span></div>
+      <button
+        class="nav-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mobileNavPanel"
+        aria-label="Abrir menu"
+        data-mobile-nav-toggle
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
       <ul class="nav-links">
         <li><a href="#beneficios">Benef&iacute;cios</a></li>
         <li><a href="#programa">Programa</a></li>
@@ -18,25 +30,33 @@
       </ul>
       <a href="#checkout" class="btn btn-nav" data-open-checkout>Come&ccedil;ar Agora</a>
     </nav>
+    <div class="mobile-nav-panel" id="mobileNavPanel" aria-hidden="true" data-mobile-nav-panel>
+      <div class="mobile-nav-panel__inner">
+        <p class="mobile-nav-panel__eyebrow">Navega&ccedil;&atilde;o</p>
+        <a href="#beneficios" class="mobile-nav-link">Benef&iacute;cios</a>
+        <a href="#programa" class="mobile-nav-link">Programa</a>
+        <a href="#cta" class="mobile-nav-link">Vagas Limitadas</a>
+      </div>
+    </div>
 
     <div class="hero-content">
       <div class="hero-text">
         <div class="hero-mobile-inline">
           <span class="tag tag--compact">
             <img class="tag-logo" src="fitness.jpg" alt="Logo Fitness" draggable="false" />
-            Programa de treino online
+            Treino, alimenta&ccedil;&atilde;o e suporte online
           </span>
           <a href="#checkout" class="btn btn-mobile-cta" data-open-checkout>Come&ccedil;ar Agora</a>
         </div>
 
         <span class="tag">
           <img class="tag-logo" src="fitness.jpg" alt="Logo Fitness" draggable="false" />
-          Programa de treino online
+          Treino, alimenta&ccedil;&atilde;o e suporte online
         </span>
-        <h1>Transforme Seu Corpo em <span>90 Dias</span></h1>
+        <h1>Saia do zero e transforme seu corpo em <span>90 Dias</span></h1>
         <p>
-          Um programa completo com treinos pr&aacute;ticos, plano alimentar e acompanhamento
-          para voc&ecirc; sair do zero e construir resultados reais.
+          Treino estruturado, estrat&eacute;gia alimentar e acompanhamento para voc&ecirc; criar
+          const&acirc;ncia, sair do improviso e construir resultado real.
         </p>
 
         <div class="hero-buttons">
@@ -49,23 +69,23 @@
           <div class="hero-card-media">
             <img src="rotina.png" alt="Ilustra&ccedil;&atilde;o de halteres e coqueteleira" draggable="false" />
           </div>
-          <h3>O que voc&ecirc; recebe</h3>
+          <h3>Voc&ecirc; entra com</h3>
           <ul class="typed-list">
-            <li class="typed-item" data-text="Treinos semanais estruturados">
+            <li class="typed-item" data-text="Treino com progress&atilde;o para 90 dias">
               <span class="checkmark" aria-hidden="true">&#10004;</span>
-              <span class="typed-text">Treinos semanais estruturados</span>
+              <span class="typed-text">Treino com progress&atilde;o para 90 dias</span>
             </li>
-            <li class="typed-item" data-text="Plano alimentar pr&aacute;tico">
+            <li class="typed-item" data-text="Estrat&eacute;gia alimentar simples de seguir">
               <span class="checkmark" aria-hidden="true">&#10004;</span>
-              <span class="typed-text">Plano alimentar pr&aacute;tico</span>
+              <span class="typed-text">Estrat&eacute;gia alimentar simples de seguir</span>
             </li>
-            <li class="typed-item" data-text="Acompanhamento e suporte">
+            <li class="typed-item" data-text="Ajustes conforme sua evolu&ccedil;&atilde;o">
               <span class="checkmark" aria-hidden="true">&#10004;</span>
-              <span class="typed-text">Acompanhamento e suporte</span>
+              <span class="typed-text">Ajustes conforme sua evolu&ccedil;&atilde;o</span>
             </li>
-            <li class="typed-item" data-text="Estrat&eacute;gia para emagrecer ou ganhar massa">
+            <li class="typed-item" data-text="Dire&ccedil;&atilde;o para perder gordura ou ganhar massa">
               <span class="checkmark" aria-hidden="true">&#10004;</span>
-              <span class="typed-text">Estrat&eacute;gia para emagrecer ou ganhar massa</span>
+              <span class="typed-text">Dire&ccedil;&atilde;o para perder gordura ou ganhar massa</span>
             </li>
           </ul>
         </div>
@@ -73,15 +93,15 @@
         <div class="hero-stats">
           <div>
             <strong>+1.200</strong>
-            <span>alunos atendidos</span>
+            <span>atendimentos reais</span>
           </div>
           <div>
             <strong>90 dias</strong>
-            <span>de transforma&ccedil;&atilde;o</span>
+            <span>de estrutura clara</span>
           </div>
           <div>
             <strong>100%</strong>
-            <span>online</span>
+            <span>online e aplicado</span>
           </div>
         </div>
       </div>
@@ -91,35 +111,77 @@
         <div class="hero-card-media">
           <img src="rotina.png" alt="Ilustra&ccedil;&atilde;o de halteres e coqueteleira" draggable="false" />
         </div>
-        <h3>O que voc&ecirc; recebe</h3>
+        <h3>Voc&ecirc; entra com</h3>
         <ul class="typed-list">
-          <li class="typed-item" data-text="Treinos semanais estruturados">
+          <li class="typed-item" data-text="Treino com progress&atilde;o para 90 dias">
             <span class="checkmark" aria-hidden="true">&#10004;</span>
-            <span class="typed-text">Treinos semanais estruturados</span>
+            <span class="typed-text">Treino com progress&atilde;o para 90 dias</span>
           </li>
-          <li class="typed-item" data-text="Plano alimentar pr&aacute;tico">
+          <li class="typed-item" data-text="Estrat&eacute;gia alimentar simples de seguir">
             <span class="checkmark" aria-hidden="true">&#10004;</span>
-            <span class="typed-text">Plano alimentar pr&aacute;tico</span>
+            <span class="typed-text">Estrat&eacute;gia alimentar simples de seguir</span>
           </li>
-          <li class="typed-item" data-text="Acompanhamento e suporte">
+          <li class="typed-item" data-text="Ajustes conforme sua evolu&ccedil;&atilde;o">
             <span class="checkmark" aria-hidden="true">&#10004;</span>
-            <span class="typed-text">Acompanhamento e suporte</span>
+            <span class="typed-text">Ajustes conforme sua evolu&ccedil;&atilde;o</span>
           </li>
-          <li class="typed-item" data-text="Estrat&eacute;gia para emagrecer ou ganhar massa">
+          <li class="typed-item" data-text="Dire&ccedil;&atilde;o para perder gordura ou ganhar massa">
             <span class="checkmark" aria-hidden="true">&#10004;</span>
-            <span class="typed-text">Estrat&eacute;gia para emagrecer ou ganhar massa</span>
+            <span class="typed-text">Dire&ccedil;&atilde;o para perder gordura ou ganhar massa</span>
           </li>
         </ul>
       </div>
     </div>
+
+    <div class="hero-ticker" aria-label="Mensagem de urg&ecirc;ncia">
+      <div class="hero-ticker-track">
+        <div class="hero-ticker-group">
+          <span>&Uacute;ltimas vagas restantes</span>
+          <span>Adquira j&aacute; o seu acesso ao FIT90</span>
+          <span>Treino, alimenta&ccedil;&atilde;o e suporte em um s&oacute; programa</span>
+          <span>Comece agora e entre na pr&oacute;xima turma</span>
+        </div>
+        <div class="hero-ticker-group" aria-hidden="true">
+          <span>&Uacute;ltimas vagas restantes</span>
+          <span>Adquira j&aacute; o seu acesso ao FIT90</span>
+          <span>Treino, alimenta&ccedil;&atilde;o e suporte em um s&oacute; programa</span>
+          <span>Comece agora e entre na pr&oacute;xima turma</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-divider" aria-hidden="true"></div>
+
   </header>
+
+  <section class="proof-band">
+    <div class="proof-band-grid">
+      <article class="proof-band-card reveal">
+        <span class="proof-band-label">Prova real</span>
+        <h3>Mais de +1.200 atendimentos</h3>
+        <p>O FIT90 nasce da pr&aacute;tica com rotina, const&acirc;ncia e evolu&ccedil;&atilde;o real.</p>
+      </article>
+
+      <article class="proof-band-card reveal">
+        <span class="proof-band-label">M&eacute;todo claro</span>
+        <h3>Treino, alimenta&ccedil;&atilde;o e ajustes</h3>
+        <p>Voc&ecirc; n&atilde;o recebe dica solta. Recebe um processo organizado para seguir.</p>
+      </article>
+
+      <article class="proof-band-card reveal">
+        <span class="proof-band-label">Rotina real</span>
+        <h3>Academia, casa ou formato h&iacute;brido</h3>
+        <p>O programa foi pensado para encaixar na sua vida, e n&atilde;o o contr&aacute;rio.</p>
+      </article>
+    </div>
+  </section>
 
   <section id="beneficios" class="section">
     <div class="section-title section-title-left">
-      <span>Benef&iacute;cios</span>
-      <h2>Por que esse programa funciona?</h2>
+      <span>Por que funciona</span>
+      <h2>O FIT90 foi desenhado para gerar const&acirc;ncia</h2>
       <p>
-        Tudo foi pensado para gerar const&acirc;ncia, evolu&ccedil;&atilde;o e resultado de verdade.
+        Menos improviso, mais dire&ccedil;&atilde;o. Voc&ecirc; sabe o que fazer, como seguir e como ajustar.
       </p>
     </div>
 
@@ -127,49 +189,80 @@
       <div class="card benefit-card benefit-card--teal reveal">
         <h3>Treinos Objetivos</h3>
         <p>
-          Nada de perder tempo. Voc&ecirc; recebe treinos organizados para seguir com clareza.
+          Cada semana j&aacute; chega com dire&ccedil;&atilde;o. Voc&ecirc; executa sem perder tempo decidindo tudo sozinho.
         </p>
         <span class="benefit-icon benefit-icon--image" aria-hidden="true">
-          <img src="alter-clean.png" alt="" draggable="false" />
+          <img src="alter-clean.png" alt="" draggable="false" loading="lazy" decoding="async" />
         </span>
       </div>
 
       <div class="card benefit-card benefit-card--emerald reveal">
         <h3>Plano Alimentar</h3>
         <p>
-          Uma alimenta&ccedil;&atilde;o ajustada para seu objetivo, de forma pr&aacute;tica e sustent&aacute;vel.
+          Uma estrat&eacute;gia simples para sustentar resultado sem depender de dieta imposs&iacute;vel.
         </p>
         <span class="benefit-icon benefit-icon--image benefit-icon--food" aria-hidden="true">
-          <img src="alimentacao-limpa.svg" alt="" draggable="false" />
+          <img src="alimentacao-limpa.svg" alt="" draggable="false" loading="lazy" decoding="async" />
         </span>
       </div>
 
       <div class="card benefit-card benefit-card--cyan reveal">
         <h3>Acompanhamento</h3>
         <p>
-          Voc&ecirc; n&atilde;o fica sozinho. O suporte ajuda a manter disciplina e corrigir o rumo.
+          Quando a rotina muda, o plano ajusta. Voc&ecirc; continua avan&ccedil;ando sem se perder.
         </p>
         <span class="benefit-icon benefit-icon--image benefit-icon--chat" aria-hidden="true">
-          <img src="chat-clean.png" alt="" draggable="false" />
+          <img src="chat-clean.png" alt="" draggable="false" loading="lazy" decoding="async" />
         </span>
       </div>
 
       <div class="card benefit-card benefit-card--blue reveal">
         <h3>Resultados Reais</h3>
         <p>
-          O foco &eacute; evolu&ccedil;&atilde;o gradual, consist&ecirc;ncia e mudan&ccedil;a vis&iacute;vel no corpo e na rotina.
+          O foco &eacute; mudan&ccedil;a vis&iacute;vel no corpo, na disciplina e na const&acirc;ncia.
         </p>
         <span class="benefit-icon benefit-icon--image benefit-icon--stats" aria-hidden="true">
-          <img src="estatistica.png" alt="" draggable="false" />
+          <img src="estatistica.png" alt="" draggable="false" loading="lazy" decoding="async" />
         </span>
       </div>
     </div>
   </section>
 
+  <section class="section method-section">
+    <div class="section-title">
+      <span>M&eacute;todo FIT90</span>
+      <h2>Como a evolu&ccedil;&atilde;o acontece na pr&aacute;tica</h2>
+      <p>
+        Um processo simples para tirar voc&ecirc; da tentativa e erro e colocar sua rotina em movimento.
+      </p>
+    </div>
+
+    <div class="method-grid">
+      <article class="method-card reveal">
+        <span class="method-step">Etapa 1</span>
+        <h3>Diagn&oacute;stico</h3>
+        <p>Seu objetivo, rotina e n&iacute;vel atual definem um ponto de partida coerente.</p>
+      </article>
+
+      <article class="method-card reveal">
+        <span class="method-step">Etapa 2</span>
+        <h3>Execu&ccedil;&atilde;o</h3>
+        <p>Voc&ecirc; recebe treino e dire&ccedil;&atilde;o alimentar com aplica&ccedil;&atilde;o simples no dia a dia.</p>
+      </article>
+
+      <article class="method-card reveal">
+        <span class="method-step">Etapa 3</span>
+        <h3>Ajuste</h3>
+        <p>Com acompanhamento e corre&ccedil;&otilde;es, o plano continua avan&ccedil;ando com voc&ecirc;.</p>
+      </article>
+    </div>
+  </section>
+
   <section id="programa" class="section dark-section">
     <div class="section-title">
-      <span>Programa</span>
-      <h2>O que est&aacute; incluso</h2>
+      <span>Programa por dentro</span>
+      <h2>O que voc&ecirc; recebe ao entrar</h2>
+      <p>Clareza no in&iacute;cio, consist&ecirc;ncia no meio e ajuste ao longo do processo.</p>
     </div>
 
     <div class="program-accordion">
@@ -181,7 +274,7 @@
           aria-expanded="true"
           aria-controls="program-panel-1"
         >
-          <span class="program-toggle-label">Avalia&ccedil;&atilde;o Inicial</span>
+          <span class="program-toggle-label">Diagn&oacute;stico Inicial</span>
           <span class="program-toggle-icon" aria-hidden="true"></span>
         </button>
         <div
@@ -192,7 +285,7 @@
           aria-hidden="false"
         >
           <div class="program-panel-inner">
-            <p>Entendimento do seu objetivo, n&iacute;vel f&iacute;sico e rotina para direcionar o plano.</p>
+            <p>Leitura do seu objetivo, rotina, disponibilidade e n&iacute;vel atual para definir uma dire&ccedil;&atilde;o coerente.</p>
           </div>
         </div>
       </article>
@@ -205,7 +298,7 @@
           aria-expanded="false"
           aria-controls="program-panel-2"
         >
-          <span class="program-toggle-label">Treinos Semanais</span>
+          <span class="program-toggle-label">Treino com Progress&atilde;o</span>
           <span class="program-toggle-icon" aria-hidden="true"></span>
         </button>
         <div
@@ -216,7 +309,7 @@
           aria-hidden="true"
         >
           <div class="program-panel-inner">
-            <p>Treinos montados para academia, casa ou rotina h&iacute;brida.</p>
+            <p>Sess&otilde;es organizadas para academia, casa ou rotina h&iacute;brida, com foco em evolu&ccedil;&atilde;o semanal.</p>
           </div>
         </div>
       </article>
@@ -229,7 +322,7 @@
           aria-expanded="false"
           aria-controls="program-panel-3"
         >
-          <span class="program-toggle-label">Estrat&eacute;gia Alimentar</span>
+          <span class="program-toggle-label">Alimenta&ccedil;&atilde;o Aplic&aacute;vel</span>
           <span class="program-toggle-icon" aria-hidden="true"></span>
         </button>
         <div
@@ -240,7 +333,7 @@
           aria-hidden="true"
         >
           <div class="program-panel-inner">
-            <p>Organiza&ccedil;&atilde;o da alimenta&ccedil;&atilde;o para potencializar seu desempenho e evolu&ccedil;&atilde;o.</p>
+            <p>Estrat&eacute;gia simples para apoiar seu objetivo sem depender de dieta imposs&iacute;vel de manter.</p>
           </div>
         </div>
       </article>
@@ -253,7 +346,7 @@
           aria-expanded="false"
           aria-controls="program-panel-4"
         >
-          <span class="program-toggle-label">Suporte e Ajustes</span>
+          <span class="program-toggle-label">Ajustes e Acompanhamento</span>
           <span class="program-toggle-icon" aria-hidden="true"></span>
         </button>
         <div
@@ -264,7 +357,7 @@
           aria-hidden="true"
         >
           <div class="program-panel-inner">
-            <p>Acompanhamento cont&iacute;nuo para adaptar o programa conforme seus resultados.</p>
+            <p>Corre&ccedil;&otilde;es ao longo do processo para manter const&acirc;ncia, dire&ccedil;&atilde;o e resultado.</p>
           </div>
         </div>
       </article>
@@ -274,12 +367,17 @@
   <section id="cta" class="cta-section">
     <div class="cta-box reveal">
       <span class="cta-mini">Vagas limitadas</span>
-      <h2>Comece hoje sua transforma&ccedil;&atilde;o</h2>
+      <h2>Entre agora e comece com um plano claro</h2>
       <p>
-        Entre agora para o programa e d&ecirc; o primeiro passo rumo ao corpo que voc&ecirc; quer.
+        Treino, alimenta&ccedil;&atilde;o e acompanhamento para os pr&oacute;ximos 90 dias em um &uacute;nico programa.
       </p>
+      <div class="cta-points">
+        <span>+1.200 atendimentos</span>
+        <span>Acesso imediato</span>
+        <span>Pix e cart&atilde;o</span>
+      </div>
       <a href="#checkout" class="btn pulse-btn" data-open-checkout>Quero Come&ccedil;ar Agora</a>
-      <p class="small-text">Treino + alimenta&ccedil;&atilde;o + acompanhamento em um s&oacute; lugar.</p>
+      <p class="small-text">Pagamento seguro, acesso 100% online e valor final j&aacute; definido.</p>
     </div>
   </section>
 
@@ -294,31 +392,39 @@
 
       <section class="checkout-hero">
         <div class="checkout-overview">
-          <span class="checkout-kicker">Checkout FIT90</span>
-          <h1 id="checkoutTitle">Finalize sua entrada no programa</h1>
+          <span class="checkout-kicker">Reserva de vaga FIT90</span>
+          <h1 id="checkoutTitle">Confirme sua vaga</h1>
           <p class="checkout-lead">
-            Escolha Pix ou cart&atilde;o e siga para o pagamento.
+            Escolha Pix ou cart&atilde;o para liberar seu acesso ao FIT90.
           </p>
+          <div class="checkout-quick-points" aria-label="Destaques do checkout">
+            <span>Acesso imediato</span>
+            <span>100% online</span>
+            <span>Suporte cont&iacute;nuo</span>
+          </div>
         </div>
 
         <div class="checkout-column">
           <div class="checkout-panel" id="checkoutPanel" aria-label="Checkout do programa">
             <div class="checkout-summary">
-              <span class="checkout-summary-label">Valor final</span>
+              <span class="checkout-summary-label">Investimento final</span>
               <strong class="checkout-summary-total" id="checkoutTotal">Calculando total</strong>
+              <span class="checkout-summary-note" id="checkoutSummaryNote">
+                Valor final &uacute;nico, pronto para pagamento.
+              </span>
             </div>
 
             <div class="checkout-methods" role="tablist" aria-label="Formas de pagamento">
               <button class="checkout-method is-active" type="button" data-method="pix" aria-pressed="true">
                 <span class="checkout-method-tag">Pix</span>
                 <strong class="checkout-method-total" id="checkoutPixTotal">Calculando total</strong>
-                <span class="checkout-method-copy">Pagamento instant&acirc;neo com total final j&aacute; ajustado.</span>
+                <span class="checkout-method-copy">Confirma&ccedil;&atilde;o r&aacute;pida para liberar seu acesso.</span>
               </button>
 
               <button class="checkout-method" type="button" data-method="card" aria-pressed="false">
                 <span class="checkout-method-tag">Cart&atilde;o</span>
                 <strong class="checkout-method-total" id="checkoutCardTotal">Calculando total</strong>
-                <span class="checkout-method-copy">Checkout seguro com o total final fechado para o cliente.</span>
+                <span class="checkout-method-copy">Pagamento seguro com valor final j&aacute; definido.</span>
               </button>
             </div>
 
@@ -326,39 +432,33 @@
             <p class="checkout-helper" id="checkoutHelper">
               Selecione a forma de pagamento para continuar.
             </p>
-          </div>
-
-          <div class="checkout-trust">
-            <strong>Pagamento seguro</strong>
-            <p>
-              Esta p&aacute;gina foi preparada para enviar o cliente ao checkout com o total final de Pix ou cart&atilde;o
-              j&aacute; calculado.
-            </p>
+            <div class="checkout-assurance" aria-label="Informa&ccedil;&otilde;es de seguran&ccedil;a">
+              <span>Ambiente seguro</span>
+              <span>Confirma&ccedil;&atilde;o imediata</span>
+            </div>
           </div>
         </div>
 
         <div class="checkout-info-card">
-          <h2>O que voc&ecirc; garante hoje</h2>
+          <span class="checkout-info-eyebrow">Ao confirmar hoje</span>
+          <h2>O que voc&ecirc; desbloqueia agora</h2>
+          <p class="checkout-info-lead">
+            Um plano direto ao ponto para come&ccedil;ar com clareza, rotina e const&acirc;ncia.
+          </p>
           <ul class="checkout-includes checkout-typed-list">
-            <li class="checkout-typed-item" data-text="Treinos pr&aacute;ticos organizados para 90 dias">
+            <li class="checkout-typed-item" data-text="Treino estruturado para os pr&oacute;ximos 90 dias">
               <span class="checkout-bullet" aria-hidden="true"></span>
-              <span class="typed-text">Treinos pr&aacute;ticos organizados para 90 dias</span>
+              <span class="typed-text">Treino estruturado para os pr&oacute;ximos 90 dias</span>
             </li>
-            <li class="checkout-typed-item" data-text="Plano alimentar objetivo e aplic&aacute;vel">
+            <li class="checkout-typed-item" data-text="Estrat&eacute;gia alimentar simples de aplicar">
               <span class="checkout-bullet" aria-hidden="true"></span>
-              <span class="typed-text">Plano alimentar objetivo e aplic&aacute;vel</span>
+              <span class="typed-text">Estrat&eacute;gia alimentar simples de aplicar</span>
             </li>
-            <li class="checkout-typed-item" data-text="Suporte para manter const&acirc;ncia e resultado">
+            <li class="checkout-typed-item" data-text="Acompanhamento para manter const&acirc;ncia">
               <span class="checkout-bullet" aria-hidden="true"></span>
-              <span class="typed-text">Suporte para manter const&acirc;ncia e resultado</span>
+              <span class="typed-text">Acompanhamento para manter const&acirc;ncia</span>
             </li>
           </ul>
-
-          <div class="checkout-flags">
-            <span>Acesso online</span>
-            <span>Pix e cart&atilde;o</span>
-            <span>Entrada imediata</span>
-          </div>
         </div>
       </section>
     </main>
