@@ -32,6 +32,27 @@ let checkoutTypingSequenceToken = 0;
 let landingScrollY = 0;
 let lastFocusedElement = null;
 const mobileLayoutQuery = window.matchMedia("(max-width: 768px)");
+const coarsePointerQuery = window.matchMedia("(pointer: coarse)");
+const hoverNoneQuery = window.matchMedia("(hover: none)");
+let currentDeviceLayout = "desktop";
+
+function detectDeviceLayout() {
+  const userAgent = navigator.userAgent || "";
+  const userAgentDataMobile =
+    typeof navigator.userAgentData?.mobile === "boolean" ? navigator.userAgentData.mobile : false;
+  const isAppleTouchDevice = /Mac/i.test(navigator.platform || "") && navigator.maxTouchPoints > 1;
+  const mobileUserAgent =
+    userAgentDataMobile ||
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Windows Phone/i.test(userAgent) ||
+    isAppleTouchDevice;
+  const touchLikeDevice =
+    navigator.maxTouchPoints > 0 || coarsePointerQuery.matches || hoverNoneQuery.matches;
+  const compactViewport = window.innerWidth <= 1024 || Math.min(window.innerWidth, window.innerHeight) <= 820;
+
+  return mobileUserAgent || (touchLikeDevice && compactViewport && mobileLayoutQuery.matches)
+    ? "mobile"
+    : "desktop";
+}
 
 function createClickSoundInstance() {
   const audio = new Audio(CLICK_SOUND_SRC);
@@ -125,7 +146,7 @@ function setupRevealObserver() {
     revealObserver = null;
   }
 
-  if (mobileLayoutQuery.matches || !("IntersectionObserver" in window)) {
+  if (isMobileLayout() || !("IntersectionObserver" in window)) {
     revealElements.forEach((element) => {
       element.classList.add("active");
     });
@@ -159,7 +180,11 @@ function setupRevealObserver() {
 }
 
 function setMobileExperienceState() {
+  currentDeviceLayout = detectDeviceLayout();
   document.body.classList.toggle("mobile-experience", isMobileLayout());
+  document.body.classList.toggle("device-mobile", isMobileLayout());
+  document.body.classList.toggle("device-desktop", !isMobileLayout());
+  document.body.dataset.deviceLayout = currentDeviceLayout;
 
   if (isMobileLayout()) {
     stopTypingSounds();
@@ -170,6 +195,11 @@ function setMobileExperienceState() {
   }
 }
 
+currentDeviceLayout = detectDeviceLayout();
+document.body.classList.toggle("device-mobile", currentDeviceLayout === "mobile");
+document.body.classList.toggle("device-desktop", currentDeviceLayout === "desktop");
+document.body.dataset.deviceLayout = currentDeviceLayout;
+
 window.addEventListener("load", setupRevealObserver);
 window.addEventListener("load", prepareClickSoundPool, { once: true });
 window.addEventListener("load", setMobileExperienceState);
@@ -178,18 +208,25 @@ if (typeof mobileLayoutQuery.addEventListener === "function") {
   mobileLayoutQuery.addEventListener("change", setupRevealObserver);
   mobileLayoutQuery.addEventListener("change", syncTypingByActiveView);
   mobileLayoutQuery.addEventListener("change", setMobileExperienceState);
+  coarsePointerQuery.addEventListener("change", setMobileExperienceState);
+  hoverNoneQuery.addEventListener("change", setMobileExperienceState);
 } else if (typeof mobileLayoutQuery.addListener === "function") {
   mobileLayoutQuery.addListener(setupRevealObserver);
   mobileLayoutQuery.addListener(syncTypingByActiveView);
   mobileLayoutQuery.addListener(setMobileExperienceState);
+  coarsePointerQuery.addListener(setMobileExperienceState);
+  hoverNoneQuery.addListener(setMobileExperienceState);
 }
+
+window.addEventListener("resize", setMobileExperienceState, { passive: true });
+window.addEventListener("orientationchange", setMobileExperienceState);
 
 document.addEventListener("dragstart", function (e) {
   e.preventDefault();
 });
 
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-const isMobileLayout = () => mobileLayoutQuery.matches;
+const isMobileLayout = () => currentDeviceLayout === "mobile";
 
 function setMobileNavState(isOpen) {
   if (!mobileNavToggle || !mobileNavPanel) {
