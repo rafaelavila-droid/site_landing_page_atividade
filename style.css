@@ -10,7 +10,7 @@ html {
 }
 
 body {
-  font-family: 'Times New Roman', Times, serif;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   background: #0b0f19;
   color: #ffffff;
   line-height: 1.6;
@@ -993,7 +993,7 @@ a {
   padding: 22px 22px 20px;
   background: linear-gradient(145deg, rgba(14, 22, 34, 0.94), rgba(10, 17, 28, 0.98));
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 22px;
+  border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
 }
 
@@ -1100,8 +1100,8 @@ a {
   gap: 22px;
   padding: 30px 28px 24px;
   background: linear-gradient(180deg, rgba(30, 35, 60, 0.98), rgba(28, 18, 34, 0.96));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
   box-shadow:
     0 14px 28px rgba(0, 0, 0, 0.16),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -1127,7 +1127,7 @@ a {
   content: "";
   position: absolute;
   inset: 1px;
-  border-radius: 23px;
+  border-radius: 5px;
   border: 1px solid rgba(188, 220, 255, 0.04);
   pointer-events: none;
 }
@@ -1286,7 +1286,7 @@ a {
   padding: 28px 24px 24px;
   background: linear-gradient(150deg, rgba(15, 22, 35, 0.94), rgba(10, 17, 28, 0.98));
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 24px;
+  border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
 }
 
@@ -1494,13 +1494,13 @@ a {
 }
 
 .cta-box {
-  max-width: 900px;
+  max-width: 1080px;
   margin: 0 auto;
   text-align: center;
   padding: 50px 30px;
   background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(15, 23, 42, 0.95));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
@@ -1631,7 +1631,7 @@ a {
   align-items: center;
   width: fit-content;
   padding: 9px 16px;
-  border-radius: 999px;
+  border-radius: 10px;
   background: linear-gradient(135deg, rgba(0, 229, 168, 0.14), rgba(0, 229, 168, 0.04));
   color: #8effd9;
   font-size: 0.8rem;
@@ -1663,7 +1663,7 @@ a {
 
 .checkout-quick-points span {
   padding: 10px 14px;
-  border-radius: 999px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.07);
   color: #dff4ff;
@@ -1677,7 +1677,7 @@ a {
   padding: 26px 28px;
   background: linear-gradient(145deg, rgba(15, 22, 35, 0.88), rgba(11, 17, 27, 0.95));
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 26px;
+  border-radius: 10px;
   box-shadow:
     0 18px 38px rgba(0, 0, 0, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -1714,7 +1714,7 @@ a {
   gap: 14px;
   min-height: 0;
   padding: 12px 14px;
-  border-radius: 18px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.04);
   color: #d9e6f3;
@@ -1784,7 +1784,7 @@ a {
   text-align: left;
   background: linear-gradient(145deg, rgba(12, 18, 29, 0.92), rgba(13, 20, 33, 0.98));
   border: 1px solid rgba(255, 255, 255, 0.07);
-  border-radius: 26px;
+  border-radius: 10px;
   box-shadow:
     0 22px 40px rgba(0, 0, 0, 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -1831,7 +1831,7 @@ a {
   padding: 18px;
   background: linear-gradient(160deg, rgba(20, 29, 43, 0.98), rgba(12, 17, 28, 0.98));
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
+  border-radius: 10px;
   color: #edf7ff;
   font: inherit;
   text-align: left;
@@ -1847,7 +1847,7 @@ a {
   content: "";
   position: absolute;
   inset: 1px;
-  border-radius: 19px;
+  border-radius: 10px;
   border: 1px solid rgba(173, 213, 255, 0.04);
   pointer-events: none;
 }
@@ -1919,7 +1919,7 @@ a {
 
 .checkout-assurance span {
   padding: 9px 12px;
-  border-radius: 999px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.06);
   color: #dceffd;
@@ -2442,7 +2442,7 @@ a {
 
   .checkout-info-card {
     padding: 20px 18px;
-    border-radius: 22px;
+    border-radius: 10px;
   }
 
   .checkout-info-card h2 {
