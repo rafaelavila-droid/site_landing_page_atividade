@@ -211,6 +211,204 @@ a {
   box-shadow: 0 0 12px rgba(0, 229, 168, 0.28);
 }
 
+.prank-trigger {
+  position: absolute;
+  right: 28px;
+  bottom: 204px;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(2, 2, 2, 0.92);
+  color: rgba(232, 240, 244, 0.46);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 0 16px rgba(0, 229, 168, 0.08),
+    0 10px 24px rgba(0, 0, 0, 0.28);
+  opacity: 0.68;
+  cursor: pointer;
+  z-index: 3;
+  transition: opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.prank-trigger:hover,
+.prank-trigger:focus-visible {
+  border-color: rgba(0, 229, 168, 0.2);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 0 22px rgba(0, 229, 168, 0.13),
+    0 12px 28px rgba(0, 0, 0, 0.34);
+  opacity: 0.86;
+  transform: translateY(-1px);
+}
+
+.prank-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.site-body.prank-active {
+  overflow: hidden;
+}
+
+.site-body.prank-active .prank-layer {
+  pointer-events: auto;
+}
+
+.prank-error-cloud,
+.prank-blackout,
+.prank-jumpscare {
+  position: fixed;
+  inset: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.prank-error-cloud.is-visible,
+.prank-blackout.is-visible,
+.prank-jumpscare.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.prank-error-cloud {
+  z-index: 1;
+}
+
+.prank-blackout {
+  background: #000000;
+  z-index: 2;
+}
+
+.prank-jumpscare {
+  z-index: 3;
+  background: #000000;
+}
+
+.prank-jumpscare img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+}
+
+.prank-error-box {
+  position: absolute;
+  width: 330px;
+  min-height: 194px;
+  background: #ede8de;
+  border: 2px solid #aba48f;
+  box-shadow:
+    0 22px 44px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.prank-error-box.is-primary {
+  width: 390px;
+  min-height: 214px;
+}
+
+.prank-error-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 34px;
+  padding: 0 8px 0 12px;
+  background: linear-gradient(90deg, #0f4099, #16a0ef);
+  color: #ffffff;
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.prank-error-close {
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(24, 29, 32, 0.74);
+  background: #ede8de;
+  color: #111111;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.prank-error-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  padding: 24px 18px 18px;
+  align-items: center;
+}
+
+.prank-error-copy strong {
+  display: block;
+  color: #050505;
+  font-size: 2.9rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.prank-error-copy p {
+  margin-top: 10px;
+  color: #1f1f1f;
+  font-size: 0.95rem;
+  line-height: 1.35;
+}
+
+.prank-error-icon {
+  position: relative;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: #ff2828;
+  box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.14);
+}
+
+.prank-error-icon::before,
+.prank-error-icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 54px;
+  height: 12px;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+.prank-error-icon::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.prank-error-icon::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.prank-error-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 18px 18px;
+}
+
+.prank-error-actions button {
+  min-width: 128px;
+  min-height: 50px;
+  border: 2px solid rgba(17, 17, 17, 0.72);
+  background: #f6f2e8;
+  color: #101010;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -1781,6 +1979,11 @@ a {
 }
 
 @media (max-width: 1024px) {
+  .prank-trigger,
+  .prank-layer {
+    display: none !important;
+  }
+
   .hero-content,
   .cards {
     grid-template-columns: 1fr 1fr;

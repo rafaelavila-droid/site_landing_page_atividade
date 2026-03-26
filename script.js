@@ -8,6 +8,10 @@ const checkoutClosers = Array.from(document.querySelectorAll("[data-close-checko
 const mobileNavToggle = document.querySelector("[data-mobile-nav-toggle]");
 const mobileNavPanel = document.querySelector("[data-mobile-nav-panel]");
 const mobileNavLinks = Array.from(document.querySelectorAll(".mobile-nav-link"));
+const prankTrigger = document.querySelector("[data-prank-trigger]");
+const prankErrorCloud = document.getElementById("prankErrorCloud");
+const prankBlackout = document.getElementById("prankBlackout");
+const prankJumpscare = document.getElementById("prankJumpscare");
 const TYPING_LOOP_MS = 20000;
 const CLICK_SOUND_SRC = "mouse-click-sound-fx.mp3";
 const CLICK_SOUND_TARGETS = "a[href], button, [role='button'], [data-click-sound]";
@@ -20,21 +24,51 @@ const TYPING_SOUND_POOL_MAX = 12;
 const TYPING_SOUND_VOLUME = 0.03;
 const TYPING_SOUND_PLAYBACK_RATE = 1.08;
 const TYPING_SOUND_MIN_INTERVAL_MS = 85;
+const PRANK_ERROR_SOUND_SRC = "error_CDOxCYm.mp3";
+const PRANK_JUMPSCARE_SOUND_SRC = "five-nights-at-freddys-full-scream-sound_2.mp3";
+const PRANK_ERROR_SOUND_POOL_SIZE = 6;
+const PRANK_ERROR_SOUND_POOL_MAX = 12;
+const PRANK_ERROR_SOUND_VOLUME = 0.22;
+const PRANK_JUMPSCARE_VOLUME = 0.72;
+const PRANK_BLACKOUT_MS = 10000;
+const PRANK_JUMPSCARE_DELAY_MS = 7000;
+const PRANK_JUMPSCARE_DURATION_MS = 4000;
+const PRANK_SEQUENCE_STORAGE_KEY = "fit90PrankSequence";
+const PRANK_INITIAL_ERROR_DELAY_MS = 1500;
+const PRANK_ERROR_BURST_COUNT = 12;
+const PRANK_ERROR_BURST_INTERVAL_MS = 95;
+const PRANK_ERROR_TO_BLACKOUT_GAP_MS = 420;
+const PRANK_ERROR_STAGE_TOTAL_MS =
+  PRANK_INITIAL_ERROR_DELAY_MS +
+  PRANK_ERROR_BURST_COUNT * PRANK_ERROR_BURST_INTERVAL_MS +
+  PRANK_ERROR_TO_BLACKOUT_GAP_MS;
+const PRANK_BLACKOUT_END_MS = PRANK_ERROR_STAGE_TOTAL_MS + PRANK_BLACKOUT_MS;
+const PRANK_JUMPSCARE_START_MS = PRANK_BLACKOUT_END_MS + PRANK_JUMPSCARE_DELAY_MS;
+const PRANK_SEQUENCE_TOTAL_MS = PRANK_JUMPSCARE_START_MS + PRANK_JUMPSCARE_DURATION_MS;
 const CHECKOUT_HASH = "#checkout";
 const clickSoundPool = [];
 const typingSoundPool = [];
+const prankErrorSoundPool = [];
+const prankSequenceTimers = [];
 let clickSoundPoolIndex = 0;
 let typingSoundPoolIndex = 0;
+let prankErrorSoundPoolIndex = 0;
 let lastTypingSoundAt = 0;
 let revealObserver = null;
 let checkoutTypingLoopTimer = null;
 let checkoutTypingSequenceToken = 0;
 let landingScrollY = 0;
 let lastFocusedElement = null;
+let prankSequenceRunning = false;
 const mobileLayoutQuery = window.matchMedia("(max-width: 768px)");
 const coarsePointerQuery = window.matchMedia("(pointer: coarse)");
 const hoverNoneQuery = window.matchMedia("(hover: none)");
 let currentDeviceLayout = "desktop";
+const prankJumpscareAudio = new Audio(PRANK_JUMPSCARE_SOUND_SRC);
+
+prankJumpscareAudio.preload = "auto";
+prankJumpscareAudio.volume = PRANK_JUMPSCARE_VOLUME;
+prankJumpscareAudio.load();
 
 function detectDeviceLayout() {
   const userAgent = navigator.userAgent || "";
@@ -72,6 +106,14 @@ function createTypingSoundInstance() {
   return audio;
 }
 
+function createPrankErrorSoundInstance() {
+  const audio = new Audio(PRANK_ERROR_SOUND_SRC);
+  audio.preload = "auto";
+  audio.volume = PRANK_ERROR_SOUND_VOLUME;
+  audio.load();
+  return audio;
+}
+
 function prepareClickSoundPool() {
   while (clickSoundPool.length < CLICK_SOUND_POOL_SIZE) {
     clickSoundPool.push(createClickSoundInstance());
@@ -81,6 +123,12 @@ function prepareClickSoundPool() {
 function prepareTypingSoundPool() {
   while (typingSoundPool.length < TYPING_SOUND_POOL_SIZE) {
     typingSoundPool.push(createTypingSoundInstance());
+  }
+}
+
+function preparePrankErrorSoundPool() {
+  while (prankErrorSoundPool.length < PRANK_ERROR_SOUND_POOL_SIZE) {
+    prankErrorSoundPool.push(createPrankErrorSoundInstance());
   }
 }
 
@@ -137,6 +185,34 @@ function getTypingSoundPlayer() {
 
   const recycledAudio = typingSoundPool[typingSoundPoolIndex];
   typingSoundPoolIndex = (typingSoundPoolIndex + 1) % typingSoundPool.length;
+  return recycledAudio;
+}
+
+function getPrankErrorSoundPlayer() {
+  const availableAudio = prankErrorSoundPool.find((audio) => {
+    if (audio.paused || audio.ended) {
+      return true;
+    }
+
+    if (!Number.isFinite(audio.duration) || audio.duration === 0) {
+      return false;
+    }
+
+    return audio.currentTime >= audio.duration - 0.03;
+  });
+
+  if (availableAudio) {
+    return availableAudio;
+  }
+
+  if (prankErrorSoundPool.length < PRANK_ERROR_SOUND_POOL_MAX) {
+    const audio = createPrankErrorSoundInstance();
+    prankErrorSoundPool.push(audio);
+    return audio;
+  }
+
+  const recycledAudio = prankErrorSoundPool[prankErrorSoundPoolIndex];
+  prankErrorSoundPoolIndex = (prankErrorSoundPoolIndex + 1) % prankErrorSoundPool.length;
   return recycledAudio;
 }
 
@@ -203,6 +279,7 @@ document.body.dataset.deviceLayout = currentDeviceLayout;
 window.addEventListener("load", setupRevealObserver);
 window.addEventListener("load", prepareClickSoundPool, { once: true });
 window.addEventListener("load", setMobileExperienceState);
+window.addEventListener("load", resumePrankSequenceIfNeeded);
 
 if (typeof mobileLayoutQuery.addEventListener === "function") {
   mobileLayoutQuery.addEventListener("change", setupRevealObserver);
@@ -292,6 +369,58 @@ function playClickSound() {
   return audio;
 }
 
+function playPrankErrorSound() {
+  preparePrankErrorSoundPool();
+
+  const audio = getPrankErrorSoundPlayer();
+  audio.pause();
+  audio.currentTime = 0;
+
+  const playPromise = audio.play();
+
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {});
+  }
+}
+
+function playPrankJumpscareSound() {
+  prankJumpscareAudio.pause();
+  prankJumpscareAudio.currentTime = 0;
+
+  const playPromise = prankJumpscareAudio.play();
+
+  if (playPromise && typeof playPromise.catch === "function") {
+    playPromise.catch(() => {});
+  }
+}
+
+function primeAudioElement(audio) {
+  if (!audio) {
+    return;
+  }
+
+  const originalVolume = audio.volume;
+  audio.volume = 0;
+  audio.currentTime = 0;
+
+  const playPromise = audio.play();
+
+  if (playPromise && typeof playPromise.then === "function") {
+    playPromise
+      .then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = originalVolume;
+      })
+      .catch(() => {
+        audio.volume = originalVolume;
+      });
+    return;
+  }
+
+  audio.volume = originalVolume;
+}
+
 function shouldPlayTypingSound(character, characterIndex) {
   if (!character || /\s/.test(character)) {
     return false;
@@ -358,6 +487,319 @@ function wait(ms) {
   return new Promise((resolve) => {
     window.setTimeout(resolve, ms);
   });
+}
+
+function createPrankErrorPopup(index, isPrimary = false) {
+  const popup = document.createElement("div");
+  popup.className = "prank-error-box";
+
+  if (isPrimary) {
+    popup.classList.add("is-primary");
+  }
+
+  popup.innerHTML = `
+    <div class="prank-error-titlebar">
+      <span>Error message</span>
+      <span class="prank-error-close" aria-hidden="true">×</span>
+    </div>
+    <div class="prank-error-content">
+      <div class="prank-error-copy">
+        <strong>Error!</strong>
+        <p>Unexpected failure #${String(index + 1).padStart(2, "0")}. Please close immediately.</p>
+      </div>
+      <div class="prank-error-icon" aria-hidden="true"></div>
+    </div>
+    <div class="prank-error-actions">
+      <button type="button" tabindex="-1">Cancel</button>
+    </div>
+  `;
+
+  return popup;
+}
+
+function positionPrankErrorPopup(popup, isPrimary = false) {
+  if (!prankErrorCloud) {
+    return;
+  }
+
+  const popupWidth = isPrimary ? 390 : 330;
+  const popupHeight = isPrimary ? 214 : 194;
+  const maxLeft = Math.max(24, window.innerWidth - popupWidth - 24);
+  const maxTop = Math.max(24, window.innerHeight - popupHeight - 24);
+  const left = isPrimary ? Math.max(24, Math.round((window.innerWidth - popupWidth) / 2)) : 24 + Math.random() * (maxLeft - 24);
+  const top = isPrimary ? Math.max(26, Math.round((window.innerHeight - popupHeight) * 0.24)) : 24 + Math.random() * (maxTop - 24);
+
+  popup.style.left = `${Math.round(left)}px`;
+  popup.style.top = `${Math.round(top)}px`;
+}
+
+function showPrankErrorPopup(index, isPrimary = false) {
+  if (!prankErrorCloud) {
+    return;
+  }
+
+  const popup = createPrankErrorPopup(index, isPrimary);
+  positionPrankErrorPopup(popup, isPrimary);
+  prankErrorCloud.appendChild(popup);
+}
+
+function clearPrankPopups() {
+  if (!prankErrorCloud) {
+    return;
+  }
+
+  prankErrorCloud.innerHTML = "";
+}
+
+function setPrankVisibility(element, isVisible) {
+  if (!element) {
+    return;
+  }
+
+  element.classList.toggle("is-visible", isVisible);
+}
+
+function clearPrankTimers() {
+  prankSequenceTimers.forEach((timerId) => {
+    window.clearTimeout(timerId);
+  });
+  prankSequenceTimers.length = 0;
+}
+
+function schedulePrankTimer(callback, delay) {
+  const safeDelay = Math.max(0, delay);
+  const timerId = window.setTimeout(() => {
+    const timerIndex = prankSequenceTimers.indexOf(timerId);
+
+    if (timerIndex !== -1) {
+      prankSequenceTimers.splice(timerIndex, 1);
+    }
+
+    callback();
+  }, safeDelay);
+
+  prankSequenceTimers.push(timerId);
+  return timerId;
+}
+
+function persistPrankSequence(startedAt) {
+  try {
+    window.localStorage.setItem(
+      PRANK_SEQUENCE_STORAGE_KEY,
+      JSON.stringify({ startedAt })
+    );
+  } catch (_) {}
+}
+
+function readPersistedPrankSequence() {
+  try {
+    const rawValue = window.localStorage.getItem(PRANK_SEQUENCE_STORAGE_KEY);
+
+    if (!rawValue) {
+      return null;
+    }
+
+    const parsedValue = JSON.parse(rawValue);
+
+    if (!parsedValue || !Number.isFinite(parsedValue.startedAt)) {
+      return null;
+    }
+
+    return parsedValue;
+  } catch (_) {
+    return null;
+  }
+}
+
+function clearPersistedPrankSequence() {
+  try {
+    window.localStorage.removeItem(PRANK_SEQUENCE_STORAGE_KEY);
+  } catch (_) {}
+}
+
+function setPrankScreenLocked(isLocked) {
+  document.body.classList.toggle("prank-active", isLocked);
+}
+
+function getVisiblePrankBurstCount(elapsed) {
+  if (elapsed < PRANK_INITIAL_ERROR_DELAY_MS) {
+    return 0;
+  }
+
+  const burstElapsed = elapsed - PRANK_INITIAL_ERROR_DELAY_MS;
+  return Math.min(
+    PRANK_ERROR_BURST_COUNT,
+    Math.floor(burstElapsed / PRANK_ERROR_BURST_INTERVAL_MS) + 1
+  );
+}
+
+function renderPrankErrorStage(additionalErrorCount = 0) {
+  clearPrankPopups();
+  setPrankVisibility(prankBlackout, false);
+  setPrankVisibility(prankJumpscare, false);
+  setPrankVisibility(prankErrorCloud, true);
+  setPrankScreenLocked(true);
+  showPrankErrorPopup(0, true);
+
+  for (let i = 1; i <= additionalErrorCount; i += 1) {
+    showPrankErrorPopup(i, false);
+  }
+}
+
+function renderPrankBlackoutStage() {
+  clearPrankPopups();
+  setPrankVisibility(prankErrorCloud, false);
+  setPrankVisibility(prankJumpscare, false);
+  setPrankVisibility(prankBlackout, true);
+  setPrankScreenLocked(true);
+}
+
+function renderPrankRecoveryStage() {
+  clearPrankPopups();
+  setPrankVisibility(prankErrorCloud, false);
+  setPrankVisibility(prankBlackout, false);
+  setPrankVisibility(prankJumpscare, false);
+  setPrankScreenLocked(false);
+}
+
+function renderPrankJumpscareStage(shouldPlaySound = false) {
+  clearPrankPopups();
+  setPrankVisibility(prankErrorCloud, false);
+  setPrankVisibility(prankBlackout, false);
+  setPrankVisibility(prankJumpscare, true);
+  setPrankScreenLocked(true);
+
+  if (shouldPlaySound) {
+    playPrankJumpscareSound();
+  }
+}
+
+function resetPrankSequence() {
+  clearPrankTimers();
+  clearPrankPopups();
+  setPrankVisibility(prankErrorCloud, false);
+  setPrankVisibility(prankBlackout, false);
+  setPrankVisibility(prankJumpscare, false);
+  setPrankScreenLocked(false);
+  clearPersistedPrankSequence();
+  prankJumpscareAudio.pause();
+  prankJumpscareAudio.currentTime = 0;
+  prankSequenceRunning = false;
+
+  if (prankTrigger) {
+    prankTrigger.disabled = false;
+  }
+}
+
+function schedulePrankSequenceFrom(startedAt, options = {}) {
+  const playInitialSound = Boolean(options.playInitialSound);
+
+  if (!prankTrigger || !prankErrorCloud || !prankBlackout || !prankJumpscare || isMobileLayout()) {
+    resetPrankSequence();
+    return;
+  }
+
+  clearPrankTimers();
+  prankSequenceRunning = true;
+  prankTrigger.disabled = true;
+
+  const elapsed = Math.max(0, Date.now() - startedAt);
+
+  if (elapsed >= PRANK_SEQUENCE_TOTAL_MS) {
+    resetPrankSequence();
+    return;
+  }
+
+  if (elapsed < PRANK_ERROR_STAGE_TOTAL_MS) {
+    const visibleBurstCount = getVisiblePrankBurstCount(elapsed);
+    renderPrankErrorStage(visibleBurstCount);
+
+    if (playInitialSound && elapsed < 80) {
+      playPrankErrorSound();
+    }
+
+    for (let i = visibleBurstCount + 1; i <= PRANK_ERROR_BURST_COUNT; i += 1) {
+      const popupAt = PRANK_INITIAL_ERROR_DELAY_MS + (i - 1) * PRANK_ERROR_BURST_INTERVAL_MS;
+
+      if (popupAt > elapsed) {
+        schedulePrankTimer(() => {
+          if (!prankSequenceRunning) {
+            return;
+          }
+
+          showPrankErrorPopup(i, false);
+          playPrankErrorSound();
+        }, popupAt - elapsed);
+      }
+    }
+
+    schedulePrankTimer(() => {
+      if (!prankSequenceRunning) {
+        return;
+      }
+
+      renderPrankBlackoutStage();
+    }, PRANK_ERROR_STAGE_TOTAL_MS - elapsed);
+  } else if (elapsed < PRANK_BLACKOUT_END_MS) {
+    renderPrankBlackoutStage();
+  } else if (elapsed < PRANK_JUMPSCARE_START_MS) {
+    renderPrankRecoveryStage();
+  } else {
+    renderPrankJumpscareStage(true);
+  }
+
+  if (elapsed < PRANK_BLACKOUT_END_MS) {
+    schedulePrankTimer(() => {
+      if (!prankSequenceRunning) {
+        return;
+      }
+
+      renderPrankRecoveryStage();
+    }, PRANK_BLACKOUT_END_MS - elapsed);
+  }
+
+  if (elapsed < PRANK_JUMPSCARE_START_MS) {
+    schedulePrankTimer(() => {
+      if (!prankSequenceRunning) {
+        return;
+      }
+
+      renderPrankJumpscareStage(true);
+    }, PRANK_JUMPSCARE_START_MS - elapsed);
+  }
+
+  schedulePrankTimer(() => {
+    resetPrankSequence();
+  }, PRANK_SEQUENCE_TOTAL_MS - elapsed);
+}
+
+function runPrankSequence() {
+  if (!prankTrigger || !prankErrorCloud || !prankBlackout || !prankJumpscare || prankSequenceRunning || isMobileLayout()) {
+    return;
+  }
+
+  closeMobileNav();
+  preparePrankErrorSoundPool();
+  primeAudioElement(prankJumpscareAudio);
+  prankErrorSoundPool.forEach((audio) => primeAudioElement(audio));
+  const startedAt = Date.now();
+  persistPrankSequence(startedAt);
+  schedulePrankSequenceFrom(startedAt, { playInitialSound: true });
+}
+
+function resumePrankSequenceIfNeeded() {
+  if (isMobileLayout()) {
+    clearPersistedPrankSequence();
+    return;
+  }
+
+  const persistedSequence = readPersistedPrankSequence();
+
+  if (!persistedSequence) {
+    return;
+  }
+
+  schedulePrankSequenceFrom(persistedSequence.startedAt);
 }
 
 function getItemText(item, textElement) {
@@ -890,4 +1332,10 @@ if (checkoutButton) {
 
 if (checkoutMethods.length) {
   renderCheckoutMethod("pix");
+}
+
+if (prankTrigger) {
+  prankTrigger.addEventListener("click", function () {
+    runPrankSequence();
+  });
 }
