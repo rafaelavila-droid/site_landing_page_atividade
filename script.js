@@ -302,8 +302,9 @@ document.addEventListener("dragstart", function (e) {
   e.preventDefault();
 });
 
-const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 const isMobileLayout = () => currentDeviceLayout === "mobile";
+const shouldReduceMotion = () => reducedMotionQuery.matches && isMobileLayout();
 
 function setMobileNavState(isOpen) {
   if (!mobileNavToggle || !mobileNavPanel) {
@@ -434,7 +435,7 @@ function shouldPlayTypingSound(character, characterIndex) {
 }
 
 function playTypingSound(character, characterIndex) {
-  if (isMobileLayout() || prefersReducedMotion || !shouldPlayTypingSound(character, characterIndex)) {
+  if (isMobileLayout() || shouldReduceMotion() || !shouldPlayTypingSound(character, characterIndex)) {
     return null;
   }
 
@@ -838,7 +839,7 @@ async function typeItem(item, isCancelled = () => false) {
   textElement.textContent = "";
   setItemState(item, "is-typing");
 
-  if (prefersReducedMotion) {
+  if (shouldReduceMotion()) {
     textElement.textContent = fullText;
     setItemState(item, "typed-done");
     return;
@@ -875,7 +876,7 @@ function setupTypingSequence(items, triggerElement, options = {}) {
   let typingSequenceToken = 0;
 
   function scheduleNextTypingSequence() {
-    if (!typingStarted || prefersReducedMotion || !items.length || !isActive()) {
+    if (!typingStarted || shouldReduceMotion() || !items.length || !isActive()) {
       return;
     }
 
@@ -893,7 +894,7 @@ function setupTypingSequence(items, triggerElement, options = {}) {
     stopTypingSounds();
 
     if (resetItems) {
-      resetTypedItems(items, prefersReducedMotion);
+      resetTypedItems(items, shouldReduceMotion());
     }
   }
 
@@ -902,7 +903,7 @@ function setupTypingSequence(items, triggerElement, options = {}) {
       return;
     }
 
-    if (prefersReducedMotion) {
+    if (shouldReduceMotion()) {
       resetTypedItems(items, true);
       return;
     }
@@ -930,7 +931,7 @@ function setupTypingSequence(items, triggerElement, options = {}) {
     scheduleNextTypingSequence();
   }
 
-  resetTypedItems(items, prefersReducedMotion);
+      resetTypedItems(items, shouldReduceMotion());
 
   if ("IntersectionObserver" in window) {
     const typingObserver = new IntersectionObserver(
@@ -1026,7 +1027,7 @@ function stopCheckoutTypingLoop(resetItems = false) {
   checkoutTypingLoopTimer = null;
   stopTypingSounds();
 
-  if (resetItems && !prefersReducedMotion) {
+  if (resetItems && !shouldReduceMotion()) {
     resetTypedItems(checkoutTypedItems, false);
   }
 }
@@ -1049,7 +1050,7 @@ async function startCheckoutTypingLoop() {
 
   stopCheckoutTypingLoop(false);
 
-  if (prefersReducedMotion) {
+  if (shouldReduceMotion()) {
     resetTypedItems(checkoutTypedItems, true);
     return;
   }

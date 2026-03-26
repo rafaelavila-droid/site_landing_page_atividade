@@ -3205,15 +3205,16 @@ a {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-ticker-track,
-  .proof-band::before,
-  .proof-band::after,
-  #beneficios::before,
-  #beneficios::after,
-  .hero-card::before,
-  .card-glow,
-  .pulse-btn::before,
-  .typed-item.is-typing .typed-text::after {
+  .site-body.device-mobile .hero-ticker-track,
+  .site-body.device-mobile .proof-band::before,
+  .site-body.device-mobile .proof-band::after,
+  .site-body.device-mobile #beneficios::before,
+  .site-body.device-mobile #beneficios::after,
+  .site-body.device-mobile .hero-card::before,
+  .site-body.device-mobile .card-glow,
+  .site-body.device-mobile .pulse-btn::before,
+  .site-body.device-mobile .typed-item.is-typing .typed-text::after,
+  .site-body.device-mobile .checkout-typed-item.is-typing .typed-text::after {
     animation: none;
   }
 }
